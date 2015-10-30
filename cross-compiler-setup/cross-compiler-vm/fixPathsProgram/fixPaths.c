@@ -84,19 +84,39 @@ int main()
 					char * const relativeLink = replace(linkname, "/lib/", "../../../lib/");
 					printf("relativeLink: %s\n", relativeLink);
 					
-					int doUnlink = 0;
+					int doUnlink = 1;
+					int dryRun = 1;
 					if(doUnlink)
 					{
-						int result = unlink(fullPath);
-						printf("%d unlink result \n", result);
+						int result = 0;
+						if(dryRun == 0)
+						{
+							result = unlink(fullPath);
+							printf("%d unlink result \n", result);
+						}
 						if(result != -1)
 						{
-							int symLinkResult = symlink(fullPath, relativeLink);
-							printf("symLinkResult %d \n", symLinkResult);
-							if(symLinkResult == -1)
+							char command[200];
+							strcpy (command, "cd ");
+							strcat (command, folder);
+							strcat (command, " && ");
+							strcat (command, "ln -s  ");
+							strcat (command, relativeLink);
+							strcat (command, " ");
+							strcat (command, entry->d_name);
+							
+							printf("About to run command %s \n", command);
+							
+							if(dryRun == 0)
 							{
-								printf("symLinkResult ERROR %s\n", strerror(errno));
+								int symLinkResult = system(command);
+								printf("symLinkResult %d \n", symLinkResult);
+								if(symLinkResult == -1)
+								{
+									printf("symLinkResult ERROR %s\n", strerror(errno));
+								}
 							}
+							
 						}else
 						{
 							printf("unlink ERROR %s\n", strerror(errno));

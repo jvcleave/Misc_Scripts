@@ -13,8 +13,13 @@ cd RPI_ROOT
 ln -s /media/Data/etc/ etc
 ln -s /media/Data/lib/ lib
 ln -s /media/Data/opt/ opt
-
-cp -Rv /media/Data/usr/ usr
+mkdir usr
+cd usr
+cp -Rv /media/Data/usr/include ./
+cp -Rv /media/Data/usr/lib ./
+mkdir shared
+cd shared
+cp -Rv /media/Data/usr/shared/pkg* ./
 
 RPI_VERSION=1
 
